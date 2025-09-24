@@ -10,9 +10,12 @@ from app.database.db_handler import get_db
 from app.services import user_service
 from sqlalchemy.orm import Session
 
-SECRET_KEY = "Bhoruka_users_secret_key"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+import os   
+from dotenv import load_dotenv
+load_dotenv()
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 30))
+SECRET_KEY = os.getenv("SECRET_KEY", "your_secret_key")
+ALGORITHM = os.getenv("ALGORITHM", "HS256") 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/users/token")
 
