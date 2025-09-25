@@ -86,7 +86,7 @@ Authorization: Bearer <your-token>
 
 1.  Clone the repository:
     ```bash
-    git clone https://github.com/your-username/Bhoruka-Backend.git
+    git clone https://github.com/Anushree-Think41/Bhoruka-.git
     ```
 2.  Install the dependencies:
     ```bash
