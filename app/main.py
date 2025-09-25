@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
-from app.routers import user_router
+from app.routers import user_router, owner_router, establishment_router
 import uvicorn
 from app.database.db_handler import engine
 from app.models.user_model import Base
@@ -21,6 +21,8 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
     )
 
 app.include_router(user_router.router)
+app.include_router(owner_router.router)
+app.include_router(establishment_router.router)
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
