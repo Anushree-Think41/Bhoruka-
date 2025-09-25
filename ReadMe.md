@@ -44,6 +44,23 @@ The following endpoints are available:
 - `GET /users/me`: Get the current user's details.
 - `GET /users/{user_id}`: Get a user's details by ID.
 
+
+#### OWNER
+
+- `POST /owners`: Create a new owners.
+- `GET /owners`: Get owners's details.
+- `GET /owners/{owner_id}`: Get a owner's details by ID.
+- `GET /owners/{owner_id}/establishments`: Get a owner's establishments by ID.
+
+#### ESTABLISHMENTS
+
+- `POST /establishments/`: Create a new establishment.
+- `GET /establishments/`: Get all establishments.
+- `GET /establishments/{establishment_id}`: Get an establishment's details by ID.
+- `PUT /establishments/{establishment_id}`: Update an establishment's details by ID.
+- `DELETE /establishments/{establishment_id}`: Delete an establishment by ID.
+
+
 ## Authentication
 
 This application uses JSON Web Tokens (JWT) for authentication.
