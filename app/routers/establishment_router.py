@@ -6,6 +6,7 @@ import datetime
 from app.database.db_handler import get_db
 from app.models.establishment_model import Establishment as DBEstablishment
 from app.schemas.establishment_schema import Establishment, EstablishmentCreate
+import app.services.establishment_service as establishment_service
 
 router = APIRouter(
     prefix="/establishments",
@@ -14,57 +15,32 @@ router = APIRouter(
 
 @router.post("/", response_model=Establishment, status_code=status.HTTP_201_CREATED)
 def create_establishment(establishment: EstablishmentCreate, owner_id: int = Header(...), db: Session = Depends(get_db)):
-    db_establishment = DBEstablishment(
-        owner_id=owner_id,
-        establishment_name=establishment.establishment_name,
-        address=establishment.address,
-        city=establishment.city,
-        state=establishment.state,
-        pincode=establishment.pincode,
-        gstin=establishment.gstin,
-        offerings=establishment.offerings
-    )
-    db.add(db_establishment)
-    db.commit()
-    db.refresh(db_establishment)
-    return db_establishment
+    return establishment_service.create_establishment(db=db, establishment=establishment, owner_id=owner_id)
 
 @router.get("/", response_model=List[Establishment])
 def read_establishments(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    establishments = db.query(DBEstablishment).offset(skip).limit(limit).all()
+    establishments = establishment_service.get_establishments(db, skip=skip, limit=limit)
     return establishments
 
 @router.get("/{establishment_id}", response_model=Establishment)
 def read_establishment(establishment_id: int, db: Session = Depends(get_db)):
-    establishment = db.query(DBEstablishment).filter(DBEstablishment.id == establishment_id).first()
+    establishment = establishment_service.get_establishment(db, establishment_id=establishment_id)
     if establishment is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Establishment not found")
     return establishment
 
 @router.put("/{establishment_id}", response_model=Establishment)
 def update_establishment(establishment_id: int, establishment: EstablishmentCreate, db: Session = Depends(get_db)):
-    db_establishment = db.query(DBEstablishment).filter(DBEstablishment.id == establishment_id).first()
+    db_establishment = establishment_service.update_establishment(db, establishment_id=establishment_id, establishment=establishment)
     if db_establishment is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Establishment not found")
     
-    db_establishment.establishment_name = establishment.establishment_name
-    db_establishment.address = establishment.address
-    db_establishment.city = establishment.city
-    db_establishment.state = establishment.state
-    db_establishment.pincode = establishment.pincode
-    db_establishment.gstin = establishment.gstin
-    db_establishment.offerings = establishment.offerings
-
-    db.commit()
-    db.refresh(db_establishment)
     return db_establishment
 
 @router.delete("/{establishment_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_establishment(establishment_id: int, db: Session = Depends(get_db)):
-    db_establishment = db.query(DBEstablishment).filter(DBEstablishment.id == establishment_id).first()
+    db_establishment = establishment_service.delete_establishment(db, establishment_id=establishment_id)
     if db_establishment is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Establishment not found")
     
-    db.delete(db_establishment)
-    db.commit()
     return 
