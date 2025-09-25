@@ -15,6 +15,9 @@ def get_owner(db: Session, owner_id: int):
 def get_owner_by_email(db: Session, email: str):
     return db.query(DBOwner).filter(DBOwner.email == email).first()
 
+def get_owner_by_phone(db: Session, phone: str):
+    return db.query(DBOwner).filter(DBOwner.primary_phone == phone).first()
+
 def get_owners(db: Session, skip: int = 0, limit: int = 100):
     return db.query(DBOwner).offset(skip).limit(limit).all()
 

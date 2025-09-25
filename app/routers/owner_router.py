@@ -22,6 +22,10 @@ def create_owner(owner: OwnerCreate, db: Session = Depends(get_db)):
     if db_owner:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered")
 
+    db_owner = owner_service.get_owner_by_phone(db, phone=owner.primary_phone)
+    if db_owner:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Primary phone already registered")
+
     return owner_service.create_owner(db=db, owner=owner)
 
 @router.get("/", response_model=List[Owner])

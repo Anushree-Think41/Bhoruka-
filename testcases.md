@@ -49,6 +49,58 @@ The tests are configured to use an in-memory SQLite database (`sqlite:///./test.
 
 During the initial test run setup, an `UnsupportedCompilationError` related to the `ARRAY` data type was encountered. This is because SQLite does not natively support PostgreSQL's `ARRAY` type, which was used in the `Establishment` model. To resolve this for the user module tests (which do not directly depend on the `Establishment` model), the test setup was modified to explicitly create and drop only the `User` and `Owner` tables, bypassing the `Establishment` table creation in the SQLite test database.
 
-
-
 # Owner Module Test Cases
+
+This document outlines the test cases for the owner management module of the Bhoruka Backend application.
+
+## Test File Location
+
+The test cases are located in the following file:
+`Test/test_owner_module.py`
+
+## Test Cases Covered
+
+The test suite covers the following functionalities:
+
+1.  **Owner Creation:**
+    *   Successful creation of a new owner.
+    *   Attempting to create an owner with an already registered email (expected to fail).
+    *   Attempting to create an owner with an already registered primary phone (expected to fail).
+
+2.  **Get Owners:**
+    *   Retrieving a list of owners.
+    *   Retrieving a list of owners with skip and limit parameters.
+
+3.  **Get Owner by ID:**
+    *   Retrieving an owner by a valid ID.
+    *   Attempting to retrieve an owner by an invalid ID (expected to return 404).
+
+4.  **Update Owner:**
+    *   Updating an owner's details.
+    *   Attempting to update a non-existent owner (expected to return 404).
+
+5.  **Delete Owner:**
+    *   Deleting an owner.
+    *   Attempting to delete a non-existent owner (expected to return 404).
+
+6.  **Get Establishments for Owner (Note: Tests for this endpoint are currently commented out due to SQLite limitations with ARRAY types):**
+    *   Retrieving establishments associated with a valid owner.
+    *   Attempting to retrieve establishments for an owner with no registered establishments (expected to return 404).
+    *   Attempting to retrieve establishments for an invalid owner ID (expected to return 404).
+
+## How to Run Tests
+
+To run these test cases, navigate to the root directory of your project (`/home/think-41-gf-5g/Bhoruka-Backend/`) in your terminal and execute the following command:
+
+```bash
+PYTHONPATH=. pytest Test/test_owner_module.py
+```
+
+**Explanation of the command:**
+*   `PYTHONPATH=.`: This sets the `PYTHONPATH` environment variable to the current directory. This is crucial for Python to correctly locate the `app` package and its modules.
+*   `pytest`: This invokes the `pytest` test runner.
+*   `Test/test_owner_module.py`: This specifies the path to the test file you want to execute.
+
+## Test Environment
+
+Similar to the user module tests, the owner module tests are configured to use an in-memory SQLite database (`sqlite:///./test.db`). Database tables (`User` and `Owner`) are created and dropped for each test session to maintain a clean state. The `Establishment` table is excluded from creation in the SQLite test database due to its use of the `ARRAY` type, which is not natively supported by SQLite. This ensures that the owner module tests can run without issues, even though some related functionality (like retrieving establishments) is temporarily excluded from direct testing in this SQLite environment.
